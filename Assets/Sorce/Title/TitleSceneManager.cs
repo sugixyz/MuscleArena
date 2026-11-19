@@ -5,15 +5,13 @@ using System.Collections.Generic;
 
 public class TitleSceneManager : MonoBehaviour
 {
+    [Header("次のシーン名")]
     [SerializeField] private string nextSceneName = "PlayScene";
+    [Header("任意のキーでスタートを許可するかどうか")]
     [SerializeField] private bool allowAnyKetyStart = true;
 
     //画面遷移中かどうかのフラグ
     private bool isTransitioning = false;
-
-    private void Start()
-    {
-    }
 
     private void Update()
     {

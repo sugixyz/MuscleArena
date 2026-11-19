@@ -3,8 +3,10 @@ using UnityEngine.UI;
 
 public class TitleUIManager : MonoBehaviour
 {
+    [Header("それぞれのスタートボタン")]
     [SerializeField] private Button p1startButton;
     [SerializeField] private Button p2startButton;
+    [Header("TitleSceneManagerの参照")]
     [SerializeField] private TitleSceneManager titleSceneManager;
 
     private void Awake()
