@@ -1,16 +1,16 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
-public class PlayerGymController : MonoBehaviour
+public class PlayerGymController : PlayerController
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public void OnMove(InputAction.CallbackContext context)
     {
-        
+        inputData_.move_ = context.ReadValue<Vector2>();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void OnInteract(InputAction.CallbackContext context)
     {
-        
+        if(context.started) inputData_.interact_ = true;
+        else if (context.canceled) inputData_.interact_ = false;
     }
 }

@@ -1,16 +1,39 @@
+using System;
 using UnityEngine;
 
-public class TrainingParamData : MonoBehaviour
+[Serializable]
+public struct TrainingParamData
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    public int attackPowerCount;
+    public int attackSpeedCount;
+    public int moveSpeedCount;
+    public int jumpForceCount;
+    public int hpCount;
 
-    // Update is called once per frame
-    void Update()
+    /// <summary>
+    /// 効果に応じて数値を変更する
+    /// </summary>
+    /// <param name="type">効果が出るパラメータ</param>
+    /// <param name="amount">変更する数値</param>
+    public void AddStat(TrainingStatType type,int amount)
     {
-        
+        switch(type)
+        {
+            case TrainingStatType.ATTACK_POWER:
+                attackPowerCount += amount;
+                break;
+            case TrainingStatType.ATTACK_SPEED:
+                attackSpeedCount += amount;
+                break;
+            case TrainingStatType.MOVE_SPEED:
+                moveSpeedCount += amount;
+                break;
+            case TrainingStatType.JUMP_FORCE:
+                jumpForceCount += amount;
+                break;
+            case TrainingStatType.HP:
+                hpCount += amount;
+                break;
+        }
     }
 }

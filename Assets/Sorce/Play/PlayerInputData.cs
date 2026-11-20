@@ -1,16 +1,7 @@
 using UnityEngine;
 
-public class PlayerInputData : MonoBehaviour
+public struct PlayerInputData
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    public Vector2 move_ {  get; set; }
+    public bool interact_ {  get; set; }
 }

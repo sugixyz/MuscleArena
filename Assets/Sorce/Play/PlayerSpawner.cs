@@ -51,7 +51,9 @@ public class PlayerSpawner : MonoBehaviour
         GameObject player = Instantiate(playerPrefab, spawnPosition, Quaternion.identity);
         // プレイヤーの名前を設定
         player.name = $"Player{id}";
-
+        //プレイヤーのIDを設定
+        Player pl = player.GetComponent<Player>();
+        if(pl != null)pl.playerId_ = id;
 
         // プレイヤーの入力デバイスを設定
         PlayerInput playerInput = player.GetComponent<PlayerInput>();
