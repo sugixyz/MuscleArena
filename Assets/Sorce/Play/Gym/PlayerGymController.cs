@@ -1,3 +1,4 @@
+using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -10,7 +11,9 @@ public class PlayerGymController : PlayerController
 
     public void OnInteract(InputAction.CallbackContext context)
     {
-        if(context.started) inputData_.interact_ = true;
-        else if (context.canceled) inputData_.interact_ = false;
+        if(context.started)
+        {
+            inputData_.interact_++;
+        }
     }
 }

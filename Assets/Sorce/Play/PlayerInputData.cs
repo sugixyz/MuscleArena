@@ -1,7 +1,7 @@
 using UnityEngine;
 
-public struct PlayerInputData
+public class PlayerInputData
 {
-    public Vector2 move_ {  get; set; }
-    public bool interact_ {  get; set; }
+    public Vector2 move_ { get; set; } = Vector2.zero;
+    public int interact_ {  get; set; } = 0;
 }

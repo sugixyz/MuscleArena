@@ -29,7 +29,7 @@ public class TrainingTool : MonoBehaviour
     [Header("トレーニング効果設定")]
     [SerializeField] private List<StatGainEntry> statGains_ = new List<StatGainEntry>();
 
-    public string name {  get { return toolName_; } }
+    public string name_ {  get { return toolName_; } }
 
     public void ExecuteTraining(ref TrainingParamData trainingData)
     {

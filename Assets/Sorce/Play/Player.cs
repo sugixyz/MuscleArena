@@ -1,4 +1,11 @@
+using Unity.VisualScripting;
 using UnityEngine;
+
+public enum PlayerMode
+{
+    GYM,
+    BATTLE
+};
 
 public class Player : MonoBehaviour
 {
@@ -18,12 +25,13 @@ public class Player : MonoBehaviour
     public PlayerController controller_ { get; private set; }
     //プリレイヤーのリジッドボディ
     private Rigidbody rb_;
+    //プレイヤーのモード
+    private PlayerMode playerMode_;
 
     private void Start()
     {
-        if (gymController_ != null) gymController_.enabled = true;
-        if (battleController_ != null) battleController_.enabled = false;
-        controller_ = gymController_;
+        playerMode_ = PlayerMode.GYM;
+        SwitchMode(playerMode_);
 
         rb_ = GetComponent<Rigidbody>();
     }
@@ -32,12 +40,23 @@ public class Player : MonoBehaviour
     {
         PlayerInputData input = controller_.currentInput_;
         Move(input);
+
+        switch (playerMode_)
+        {
+            case PlayerMode.GYM:
+                Training(input);
+                break;
+            case PlayerMode.BATTLE:
+                break;
+        }
         Training(input);
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider other)
     {
-        TrainingTool tool = collision.gameObject.GetComponent<TrainingTool>();
+        Debug.Log($"OnTriggerEnter 発火: {other.name}");
+
+        TrainingTool tool = other.gameObject.GetComponentInParent<TrainingTool>();
         if (tool == null) return;
 
         trainingTool_ = tool;
@@ -45,7 +64,7 @@ public class Player : MonoBehaviour
         Debug.Log("筋トレ器具を登録");
     }
 
-    private void OnCollisionExit(Collision collision)
+    private void OnTriggerExit(Collider other)
     {
         trainingTool_ = null;
     }
@@ -54,25 +73,27 @@ public class Player : MonoBehaviour
     {
         Vector2 move = input.move_;
         //もし入力ベクトルが0ベクトルなら抜ける
-        if(move ==  Vector2.zero) return;
+        if (move == Vector2.zero) return;
 
         Vector3 forward = transform.forward;
         //プレイヤーの前方ベクトルと入力ベクトルから移動方向を計算
         Vector3 moveDirection = (forward * move.x + forward * move.y).normalized;
         //速度分移動方向に移動
-        transform.position = moveDirection * MOVE_SPEED;
+        transform.position = moveDirection * MOVE_SPEED * Time.deltaTime;
     }
 
     private void Training(PlayerInputData input)
     {
-        bool isInteract = input.interact_;
-        //もしインタラクト中じゃなければ抜ける
-        if (!isInteract) return;
+        //もしインタラクトが1回も押されていなければ抜ける
+        if (input.interact_ <= 0) return;
         //もし使用できる筋トレ器具がなければ抜ける
-        if (trainingTool_ == null) return;
+        if (trainingTool_ == null)
+        {
+            input.interact_ = 0;
+            return;
+        }
 
-        input.interact_ = false;
-
+        input.interact_--;
         var data = trainingData_;
         trainingTool_.ExecuteTraining(ref data);
         trainingData_ = data;
@@ -85,26 +106,33 @@ public class Player : MonoBehaviour
 
     }
 
-    /// <summary>
-    /// プレイヤーのモードを変更する
-    /// </summary>
-    /// <param name="mode">変更したいモード</param>
-    public void SwitchMode(string mode)
+    private void ChangeGymMode()
     {
-        //ジムモードなら
-        if(mode == "GYM" || mode == "Gym")
+        gymController_.enabled = true;
+        battleController_.enabled = false;
+        controller_ = gymController_;
+        return;
+    }
+
+    private void ChangeBattleMode()
+    {
+        gymController_.enabled = false;
+        battleController_.enabled = true;
+        controller_ = battleController_;
+        return;
+    }
+
+    public void SwitchMode(PlayerMode mode)
+    {
+        switch (mode)
         {
-            gymController_.enabled = true;
-            battleController_.enabled = false;
-            controller_ = gymController_;
-            return;
-        }
-        else if(mode == "BATTLE" || mode == "Battle")
-        {
-            gymController_.enabled = false;
-            battleController_.enabled = true;
-            controller_ = battleController_;
-            return;
+            case PlayerMode.GYM:
+                ChangeGymMode();
+                break;
+            case PlayerMode.BATTLE:
+                ChangeBattleMode();
+                break;
         }
     }
+
 }
